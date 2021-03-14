@@ -3,38 +3,32 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-
-//user initialization
-int SLAVE_ADDRESS;
-
-void sendDirection(byte var) {
-    Wire.beginTransmission(SLAVE_ADDRESS);
-    Wire.write(var);
-    Wire.endTransmission();
-    mr_dir = var;
-}
-
-//supports every primitive data type
-template <typename T>
-void isqc_read(T& value)
-{
-    Wire.requestFrom(SLAVE_ADDRESS, sizeof value);
-    byte* p = (byte*)&value; //changing value into an array of bytes
-    for (int i = 0; i < sizeof value; i++) {
-        *p++ = Wire.read();
-    }
-    Serial.println(value); //prints value, will delete later
-}
+#include <stdint.h>
 
 template <typename T>
-void isqc_write(T& value)
+class isqc_master
 {
-    byte data[sizeof value];
-    byte p = (byte)&value; //changing value into an array of bytes
-    for (int i = 0; i < sizeof value; i++) {
-        data[i] = (*p++);
-    }
-    Wire.write(data, sizeof value);
-}
+public:
+    void sendDirection(uint8_t var, isqc_slave s);
+    void isqc_read(T& value, isqc_slave s);
+private:
+};
+
+
+template <typename T>
+class isqc_slave
+{
+public:
+    isqc_slave(int addr);
+    void isqc_write(T& value);
+
+    void setAddr(int addr);
+    int getAddr() const;
+private:
+    int m_addr;
+    int m_dir;
+};
+
+
 
 #endif
