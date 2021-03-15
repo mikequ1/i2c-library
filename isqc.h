@@ -5,6 +5,9 @@
 #include <Wire.h>
 #include <stdint.h>
 
+class isqc_master;
+class isqc_slave;
+
 template <typename T>
 class isqc_master
 {
@@ -22,8 +25,8 @@ public:
     isqc_slave(int addr);
     void isqc_write(T& value);
 
-    void setAddr(int addr);
-    int getAddr() const;
+    void setAddr(int addr) {m_addr = addr;}
+    int getAddr() const {return m_addr;}
 private:
     int m_addr;
     int m_dir;
