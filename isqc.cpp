@@ -8,7 +8,6 @@ void isqc_master::sendDirection(byte var, isqc_slave s)
     Wire.endTransmission();
 }
 
-
 //supports every primitive data type
 template <typename T>
 void isqc_master::isqc_read(T& value, isqc_slave s)
@@ -29,6 +28,7 @@ isqc_slave::isqc_slave(int addr)
 }
 
 
+//supports every primitive data type
 template <typename T>
 void isqc_slave::isqc_write(T& value)
 {
@@ -40,3 +40,19 @@ void isqc_slave::isqc_write(T& value)
     }
     Wire.write(data, sizeof value);
 }
+
+
+/*
+Future Additions:
+
+-test if the current program works
+
+-isqc_write with command repeats appended to data
+-isqc read that separates command and data
+
+-implement instant READ and SEND BACK
+
+-enumerate features to allow every instance of the 1 byte command to a user-defined instruction
+
+-other features to be listed
+*/
