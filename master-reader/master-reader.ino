@@ -14,10 +14,12 @@ volatile float mr_float;
 
 byte mr_dir;
 
+
 void setup() {
   Wire.begin();        // join i2c bus (address optional for master)
   Serial.begin(9600);  // start serial for output
 }
+
 
 void loop() {
   sendDirection(2);
@@ -27,6 +29,8 @@ void loop() {
   else if (mr_dir == 3 || mr_dir == 4)
     isqc_read(mr_int);
 }
+
+
 
 ////////////////////
 //HELPER FUNCTIONS//
@@ -52,7 +56,7 @@ void isqc_read(T& value){
 
 
 template <typename T> 
-T isqc_read(){
+T isqc_readback(){
   byte dir = Wire.read();
   T data = determineType(dir);
   byte * p = (byte*) &data;

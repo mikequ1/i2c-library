@@ -27,7 +27,7 @@ void loop() {
 
 //this may not be necessary if we treat a receiveEvent as a requestEvent, conjoining the command and send-back actions
 void requestEvent() {
-  //determineAction();
+  determineCmd();
 }
 
 
@@ -36,7 +36,6 @@ void receiveEvent() {
   Serial.print("receiving, direction is ");
   Serial.print(ss_dir);
   Serial.print(", sending value: ");
-  determineCmd();
   
   // master sends command, slave receives command
   // immediately after, master requests data, slave sends data back that matches the command
@@ -65,6 +64,38 @@ void determineCmd(){
       Serial.println(ss_sendint);
       isqc_write(ss_sendint);
       break;
+    default:
+      break;
+  }
+}
+
+template <typename T>
+T determineType(byte dir){
+  switch(dir){
+    case 1:
+      float cmd1;
+      cmd1 = ss_float1;
+      Serial.println(cmd1);
+      isqc_write(cmd1);
+      return cmd1;
+    case 2:
+      float cmd2;
+      cmd2 = ss_float2;
+      Serial.println(cmd2);
+      isqc_write(cmd2);
+      return cmd2;
+    case 3:
+      int cmd3;
+      cmd3 = ss_int1;
+      Serial.println(cmd3);
+      isqc_write(cmd3);
+      return cmd3;
+    case 4:
+      int cmd4;
+      cmd4 = ss_int2;
+      Serial.println(cmd4);
+      isqc_write(cmd4);
+      return cmd4;
     default:
       break;
   }

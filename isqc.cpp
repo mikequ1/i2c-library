@@ -46,7 +46,7 @@ Future Additions:
 
 -test if the current program works
 
--isqc_write with command repeats appended to data
+-isqc_write with command repeats appended to data //should work 3/16/2021
 -isqc read that separates command and data
 
 -implement instant READ and SEND BACK
