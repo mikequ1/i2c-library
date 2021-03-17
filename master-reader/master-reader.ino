@@ -39,13 +39,41 @@ void sendDirection(byte var){
   mr_dir = var;
 }
 
+
 template <typename T> 
-void isqc_read(T& value)
-{
+void isqc_read(T& value){
   Wire.requestFrom(SLAVE_ADDRESS, sizeof value);
   byte * p = (byte*) &value;
   for (int i = 0; i < sizeof value; i++){
     *p++ = Wire.read();
   }
   Serial.println(value); 
+}
+
+
+template <typename T> 
+T isqc_read(){
+  byte dir = Wire.read();
+  T data = determineType(dir);
+  byte * p = (byte*) &data;
+  for (int i = 0; i < sizeof data; i++){
+    *p++ = Wire.read();
+  }
+  Serial.println(data); 
+  return data;
+}
+
+
+template <typename T> 
+T determineCmd(byte dir){
+  switch (dir){
+    case 1:
+      char b1Cmd;
+      return b1Cmd;
+    case 2:
+      int b2Cmd;
+      return b2Cmd;
+    default:
+      break;
+  }
 }

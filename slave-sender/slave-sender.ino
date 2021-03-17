@@ -18,25 +18,32 @@ void setup() {
   Wire.onRequest(requestEvent); //send back data
 }
 
+
 void loop() {
   Serial.begin(9600);
   delay(1000);
 }
 
+
+//this may not be necessary if we treat a receiveEvent as a requestEvent, conjoining the command and send-back actions
 void requestEvent() {
-  determineAction();
+  //determineAction();
 }
+
 
 void receiveEvent() {
   ss_dir = Wire.read();
   Serial.print("receiving, direction is ");
   Serial.print(ss_dir);
   Serial.print(", sending value: ");
+  determineCmd();
+  
   // master sends command, slave receives command
   // immediately after, master requests data, slave sends data back that matches the command
 }
 
-void determineAction(){
+ 
+void determineCmd(){
   switch (ss_dir) {
     case 1:
       ss_sendfloat = ss_float1;
@@ -63,24 +70,26 @@ void determineAction(){
   }
 }
 
+
 template <typename T>
-void isqc_write(T& value)
-{
+void isqc_write(T& value){
   byte data [sizeof value];
   byte* p = (byte) &value; //changing value into an array of bytes
-  for (int i = 0; i < sizeof value; i++){
+  for (int i = 0; i < sizeof value; i++)
+  {
     data[i] = (*p++);
   }
   Wire.write(data, sizeof value);
 }
 
+
 template <typename T>
-void isqc_writeBack(T& value)
-{
+void isqc_writeBack(T& value){
   byte data [sizeof value + 1 ];
   byte* p = (byte) &value; //changing value into an array of bytes
   Wire.write(ss_dir);
-  for (int i = 1; i < 1 + sizeof value; i++){
+  for (int i = 1; i < 1 + sizeof value; i++)
+  {
     data[i] = (*p++);
   }
   Wire.write(data, sizeof value);
