@@ -22,6 +22,7 @@ void loop() {
   sendDirection(random(1, 5));
    
   //DESIGNATE what direction corresponds to which actions
+
   if (mr_dir == 1 || mr_dir == 2)
     isqc_read(mr_float);
   else if (mr_dir == 3 || mr_dir == 4)
@@ -58,8 +59,9 @@ void isqc_read(T& value){
 template <typename T> 
 T isqc_readback(){
   byte dir = Wire.read();
-  T data = determineType(dir);
+  T data = determineCmd<T>(dir);
   byte * p = (byte*) &data;
+  p++;
   for (int i = 0; i < sizeof data; i++){
     *p++ = Wire.read();
   }
