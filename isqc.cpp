@@ -1,7 +1,6 @@
 #include "isqc.h"
 
-
-void isqc_master::sendDirection(byte var, isqc_slave s) 
+void isqc_master::sendDirection(uint8_t var, int s) 
 {
     Wire.beginTransmission(SLAVE_ADDRESS);
     Wire.write(var);
@@ -10,7 +9,7 @@ void isqc_master::sendDirection(byte var, isqc_slave s)
 
 //supports every primitive data type
 template <typename T>
-void isqc_master::isqc_read(T& value, isqc_slave s)
+void isqc_master::isqc_read(T& value, int s)
 {
     Wire.requestFrom(s.getAddr(), sizeof value);
     byte* p = (byte*)&value; //changing value into an array of bytes
@@ -33,7 +32,7 @@ template <typename T>
 void isqc_slave::isqc_write(T& value)
 {
     byte data[sizeof value];
-    byte p = (byte)&value; //changing value into an array of bytes
+    byte* p = (byte)&value; //changing value into an array of bytes
     for (int i = 0; i < sizeof value; i++) 
     {
         data[i] = (*p++);

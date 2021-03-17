@@ -1,7 +1,7 @@
 #include <Wire.h>
 
-//sample send values
 
+//some sample send values for testing
 int ss_sendint;
 float ss_sendfloat;
 
@@ -32,6 +32,8 @@ void receiveEvent() {
   Serial.print("receiving, direction is ");
   Serial.print(ss_dir);
   Serial.print(", sending value: ");
+  // master sends command, slave receives command
+  // immediately after, master requests data, slave sends data back that matches the command
 }
 
 void determineAction(){
@@ -62,11 +64,23 @@ void determineAction(){
 }
 
 template <typename T>
-void isqc_write (T& value)
+void isqc_write(T& value)
 {
   byte data [sizeof value];
-  byte p = (byte) &value; //changing value into an array of bytes
+  byte* p = (byte) &value; //changing value into an array of bytes
   for (int i = 0; i < sizeof value; i++){
+    data[i] = (*p++);
+  }
+  Wire.write(data, sizeof value);
+}
+
+template <typename T>
+void isqc_writeBack(T& value)
+{
+  byte data [sizeof value + 1 ];
+  byte* p = (byte) &value; //changing value into an array of bytes
+  Wire.write(ss_dir);
+  for (int i = 1; i < 1 + sizeof value; i++){
     data[i] = (*p++);
   }
   Wire.write(data, sizeof value);

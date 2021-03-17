@@ -12,10 +12,11 @@ template <typename T>
 class isqc_master
 {
 public:
-    void sendDirection(uint8_t var, isqc_slave s);
-    void isqc_read(T& value, isqc_slave s);
+    void sendDirection(uint8_t var, int s);
+    void isqc_read(T& value, int s);
 private:
 };
+
 
 
 template <typename T>
