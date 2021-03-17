@@ -1,7 +1,7 @@
 #include <Wire.h>
 
+//sample send values
 
-//some sample send values for testing
 int ss_sendint;
 float ss_sendfloat;
 
@@ -18,16 +18,14 @@ void setup() {
   Wire.onRequest(requestEvent); //send back data
 }
 
-
 void loop() {
   Serial.begin(9600);
   delay(1000);
 }
 
 
-//this may not be necessary if we treat a receiveEvent as a requestEvent, conjoining the command and send-back actions
 void requestEvent() {
-  determineCmd();
+  determineAction();
 }
 
 
@@ -36,13 +34,33 @@ void receiveEvent() {
   Serial.print("receiving, direction is ");
   Serial.print(ss_dir);
   Serial.print(", sending value: ");
-  
-  // master sends command, slave receives command
-  // immediately after, master requests data, slave sends data back that matches the command
 }
 
- 
-void determineCmd(){
+
+template <typename T>
+void isqc_write(T& value){
+  byte data [sizeof value];
+  byte * p = (byte*) &value; //changing value into an array of bytes
+  for (int i = 0; i < sizeof value; i++){
+    data[i] = (*p++);
+  }
+  Wire.write(data, sizeof value);
+}
+
+
+template <typename T>
+void isqc_writeBack(T& value){
+  byte data [sizeof value + 1];
+  byte* p = (byte) &value; //changing value into an array of bytes
+  Wire.write(ss_dir);
+  for (int i = 1; i < 1 + sizeof value; i++){
+    data[i] = (*p++);
+  }
+  Wire.write(data, sizeof value);
+}
+
+
+void determineAction(){
   switch (ss_dir) {
     case 1:
       ss_sendfloat = ss_float1;
@@ -68,6 +86,7 @@ void determineCmd(){
       break;
   }
 }
+
 
 template <typename T>
 T determineType(byte dir){
@@ -99,29 +118,4 @@ T determineType(byte dir){
     default:
       break;
   }
-}
-
-
-template <typename T>
-void isqc_write(T& value){
-  byte data [sizeof value];
-  byte* p = (byte) &value; //changing value into an array of bytes
-  for (int i = 0; i < sizeof value; i++)
-  {
-    data[i] = (*p++);
-  }
-  Wire.write(data, sizeof value);
-}
-
-
-template <typename T>
-void isqc_writeBack(T& value){
-  byte data [sizeof value + 1 ];
-  byte* p = (byte) &value; //changing value into an array of bytes
-  Wire.write(ss_dir);
-  for (int i = 1; i < 1 + sizeof value; i++)
-  {
-    data[i] = (*p++);
-  }
-  Wire.write(data, sizeof value);
 }

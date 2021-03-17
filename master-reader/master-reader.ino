@@ -11,24 +11,24 @@ const int SLAVE_ADDRESS = 8;
 volatile int mr_int;
 volatile char mr_char;
 volatile float mr_float;
-
 byte mr_dir;
-
 
 void setup() {
   Wire.begin();        // join i2c bus (address optional for master)
   Serial.begin(9600);  // start serial for output
 }
 
-
 void loop() {
-  sendDirection(2);
+  sendDirection(random(1, 5));
+   
   //DESIGNATE what direction corresponds to which actions
   if (mr_dir == 1 || mr_dir == 2)
     isqc_read(mr_float);
   else if (mr_dir == 3 || mr_dir == 4)
     isqc_read(mr_int);
 }
+
+
 
 
 
@@ -72,9 +72,11 @@ template <typename T>
 T determineCmd(byte dir){
   switch (dir){
     case 1:
+    case 2:
       char b1Cmd;
       return b1Cmd;
-    case 2:
+    case 3:
+    case 4:
       int b2Cmd;
       return b2Cmd;
     default:
